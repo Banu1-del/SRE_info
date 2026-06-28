@@ -136,8 +136,45 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         
         const name = document.getElementById('contact-name').value;
-        alert(`Thank you, ${name}! Your direct sourcing inquiry has been received. Our manager from Shree Gowri Enterprise will connect with you shortly.`);
-        directContactForm.reset();
+        const email = document.getElementById('contact-email').value;
+        const phone = document.getElementById('contact-phone').value;
+        const message = document.getElementById('contact-message').value;
+
+        // Construct formatting body text for both Email and WhatsApp
+        const emailSubject = `Sourcing Inquiry from ${name} - SGE Website`;
+        const messageBody = `Hello Shree Gowri Enterprise,\n\nI have submitted a sourcing inquiry via the SGE Catalog website. Here are my requirements:\n\n- Name: ${name}\n- Email: ${email}\n- Phone: ${phone}\n- Message: ${message}\n\nThank you!`;
+
+        // 1. WhatsApp API Link (Opening in a new tab)
+        const whatsappUrl = `https://wa.me/918088757772?text=${encodeURIComponent(messageBody)}`;
+        window.open(whatsappUrl, '_blank');
+
+        // 2. Send request to localhost backend API
+        fetch('/api/send-email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                email,
+                phone,
+                message
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.error || 'Server error'); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert(`Thank you, ${name}! Your sourcing inquiry has been successfully sent to sgenterprises570@gmail.com and WhatsApp.`);
+            directContactForm.reset();
+        })
+        .catch(error => {
+            console.error('Error sending email:', error);
+            alert(`WhatsApp was opened, but there was an error sending the email via local server: ${error.message}. Please verify the server is running and configured.`);
+        });
     });
 
     // Newsletter subscription footer
