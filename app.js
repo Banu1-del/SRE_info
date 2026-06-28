@@ -202,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 5. MOBILE BOTTOM NAV TRACKER & SCROLL SPY
     // ==========================================
     const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+    const desktopNavLinks = document.querySelectorAll('.nav-menu .nav-link');
     
     mobileNavItems.forEach(item => {
         item.addEventListener('click', () => {
@@ -221,11 +222,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (current) {
+            // Update Mobile Navigation Items
             mobileNavItems.forEach(item => {
                 item.classList.remove('active');
                 const href = item.getAttribute('href');
                 if (href === `#${current}` || (current === "home" && href === "#")) {
                     item.classList.add('active');
+                }
+            });
+
+            // Update Desktop Navigation Links
+            desktopNavLinks.forEach(link => {
+                link.classList.remove('active');
+                const href = link.getAttribute('href');
+                if (href === `#${current}` || (current === "home" && href === "#")) {
+                    link.classList.add('active');
                 }
             });
         }
